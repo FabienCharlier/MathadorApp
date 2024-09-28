@@ -1,0 +1,21 @@
+{
+    "builds": [{
+        "src": "djangoCalculusApp/wsgi.py",
+        "use": "@vercel/python",
+        "config": {
+            "maxLambdaSize": "15mb",
+            "runtime": "python3.9"
+        }
+    }],
+    "routes": [{
+        "src": "/calculusModule/static/(.*)",
+        "headers": {
+            "Cache-Control": "max-age=31536000"
+        },
+        "continue": true
+    },
+    {
+        "src": "/(.*)",
+        "dest": "djangoCalculusApp/wsgi.py"
+    }]
+}
