@@ -1,0 +1,32 @@
+{% extends "calculusModule/base_generic.html" %}
+
+{% block stylesheet %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/scoreForm.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <h2>
+    Êtes-vous sûr.e de vouloir supprimer ce score ?
+  </h2>
+  <p class="contextDescriptionText">
+    {{ score.schoolClass }}
+    <br/>
+    <br/>
+    {{ score.week }}
+    <br/>
+    <br/>
+    Score : {{ score.numericScore|floatformat:"0" }}
+    <br/>
+    <br/>
+    Pourcentage de scores nuls : {{ score.nullScoresPercentage|floatformat:"1" }} %
+    <br/>
+    <br/>
+    Pourcentage de Mathadors : {{ score.mathadorsPercentage|floatformat:"1" }} %
+  </p>
+  <form method="post" action="{% url 'deleteScore' score.id %}">
+    {% csrf_token %}
+    <input class="colorfulButton" type="submit" value="Supprimer le score">
+  </form>
+
+{% endblock %}

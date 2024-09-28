@@ -1,0 +1,35 @@
+.contextDescriptionText {
+    text-align: center;
+    margin: 0;
+    padding: 30px 0;
+}
+
+.gridForm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3 1fr);
+    gap: 10px;
+    min-width: 70%;
+    
+    @media (max-width: 750px) {
+        display: flex;
+        flex-direction: column;
+        min-width: 85%;
+    }
+}
+
+.scoreInput {
+    width: 100%;
+}
+
+.inputLine {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.submitButtonContainer {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}

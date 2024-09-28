@@ -1,0 +1,96 @@
+{% extends "calculusModule/base_generic.html" %}
+
+{% block stylesheet %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/weeklyScores.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <h2>Scores de la semaine</h2>
+  <h3>CM2</h3>
+  <table class="scoresTable">
+    <thead class="scoresTableHeader">
+      <tr>
+        <th>
+          Classement
+        </th>
+        <th>
+          Classe
+        </th>
+        <th>
+          Score
+        </th>
+        <th>
+          Pourcentage de nuls
+        </th>
+        <th>
+          Pourcentage de Mathadors
+        </th>
+      </tr>
+    </thead>
+    <tbody class="scoresTableBody">
+      {% for cm2OrderedScore in cm2OrderedScores %}
+        <tr>
+          <td>
+            {{ forloop.counter }}
+          </td>
+          <td>
+            {{ cm2OrderedScore.schoolClass.name }}
+          </td>
+          <td>
+            {{ cm2OrderedScore.numericScore|floatformat:"2" }}
+          </td>
+          <td>
+            {{ cm2OrderedScore.nullScoresPercentage|floatformat:"1" }} %
+          </td>
+          <td>
+            {{ cm2OrderedScore.mathadorsPercentage|floatformat:"1" }} %
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h3>Sixièmes</h3>
+  <table class="scoresTable">
+    <thead class="scoresTableHeader">
+      <tr>
+        <th>
+          Classement
+        </th>
+        <th>
+          Classe
+        </th>
+        <th>
+          Score
+        </th>
+        <th>
+          Pourcentage de nuls
+        </th>
+        <th>
+          Pourcentage de Mathadors
+        </th>
+      </tr>
+    </thead>
+    <tbody class="scoresTableBody">
+      {% for 6eOrderedScore in 6eOrderedScores %}
+        <tr>
+          <td>
+            {{ forloop.counter }}
+          </td>
+          <td>
+            {{ 6eOrderedScore.schoolClass.name }}
+          </td>
+          <td>
+            {{ 6eOrderedScore.numericScore|floatformat:"2" }}
+          </td>
+          <td>
+            {{ 6eOrderedScore.nullScoresPercentage|floatformat:"1" }} %
+          </td>
+          <td>
+            {{ 6eOrderedScore.mathadorsPercentage|floatformat:"1" }} %
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

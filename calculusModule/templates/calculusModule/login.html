@@ -1,0 +1,20 @@
+{% extends "calculusModule/base_generic.html" %}
+
+{% block stylesheet %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <h2>Connexion</h2>
+  <form id="loginForm" class="loginForm" method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div>Entrez votre email :</div>
+    {{ form.email }}
+    <div class="formErrorMessages">{{ form.errors.email }}</div>
+  </form>
+  <div class="loginButtonContainer">
+    <input class="colorfulButton smallButton" type="submit" form="loginForm" value="Se connecter">
+  </div>
+
+{% endblock %}

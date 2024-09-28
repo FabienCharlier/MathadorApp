@@ -1,0 +1,22 @@
+.scoresTable {
+    width: 95%;
+    border: double 3px black;
+    border-collapse: collapse;
+}
+
+.scoresTableHeader th {
+    border-bottom: double 3px black;
+}
+
+.scoresTable td {
+    text-align: center;
+}
+
+.scoresTable td, .scoresTable th {
+    border-left: solid 1px black;
+    border-right: solid 1px black;
+}
+
+.scoresTableBody tr:nth-child(even){
+    background-color: gainsboro;
+}

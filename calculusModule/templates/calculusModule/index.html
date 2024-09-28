@@ -1,0 +1,41 @@
+{% extends "calculusModule/base_generic.html" %}
+
+{% block stylesheet %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/index.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <h2>Bonjour, {{ user.first_name }} {{ user.last_name }}</h2>
+  <p>Semaine n°{{ lastWeek.displayNumber }}, du {{ lastWeek.dateStart|date:"d/m/Y" }} au {{ lastWeek.dateEnd|date:"d/m/Y" }}</p>
+  <h2>Récap de vos résultats de la semaine :</h2>
+  {% if allClasses|length == 0 %}
+    <p>Vous n'avez pas encore de classes renseignées. Contactez l'administrateur pour enregistrer des classes</p>
+  {% else %}
+    <ul class="classList">
+      {% for schoolClass in allClasses %}
+        <li class="classWeeklyResult">
+          <div>
+            <span class="bold">{{ schoolClass }}</span> : <br class="doNotShowOnDesktop"/>
+            {% if schoolClass.score != None %}
+              score : {{ schoolClass.score.numericScore|floatformat:"2" }}, <br class="doNotShowOnDesktop"/>
+              pourcentage de nuls : {{ schoolClass.score.nullScoresPercentage|floatformat:"1" }} %, <br class="doNotShowOnDesktop"/>
+              pourcentage de mathadors : {{ schoolClass.score.mathadorsPercentage|floatformat:"1" }} %
+            {% else %}
+              vous n'avez pas encore renseigné de score
+            {% endif %}
+          </div>
+          <div class="buttonLine">
+            {% if schoolClass.score != None %}
+              <a class="colorfulButton bodyLinkNotAsLink" href="{% url 'editScore' schoolClass.score.id %}">Modifier le score</a>
+              <a class="colorfulButton bodyLinkNotAsLink" href="{% url 'deleteScore' schoolClass.score.id %}">Supprimer le score</a>
+            {% else %}
+              <a class="colorfulButton bodyLinkNotAsLink" href="{% url 'addScore' schoolClass.id %}">Ajouter un score</a>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+      
+    </ul>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% block title %}
+      <title>Calcul mental Mathador</title>
+    {% endblock %}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    {% block stylesheet %}
+    {% endblock %}
+  </head>
+  <body class="bodyContainer">
+    <div class="mainViewport">
+      <div class="headerContainer">
+        {% block navigation %}
+          {% if user.is_authenticated %}
+            <a class="headerLinkNotAsLink" href="{% url 'logout' %}">Se déconnecter</a>
+            <a class="headerLinkNotAsLink" href="{% url 'index' %}">Accueil</a>
+            {% if user.is_staff %}
+              <a class="headerLinkNotAsLink" href="{% url 'weeklyScores' %}">Scores de la semaine</a>
+              <a class="headerLinkNotAsLink" href="/admin">Site admin</a>
+            {% endif %}
+          {% else %}
+            <a class="headerLinkNotAsLink" href="{% url 'login' %}">Se connecter</a>
+          {% endif %}
+        {% endblock %}
+      </div>
+      <div class="contentViewport"><div class="contentContainer">{% block content %}{% endblock %}</div></div>
+    </div>  
+  </body>
+</html>

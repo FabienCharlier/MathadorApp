@@ -1,0 +1,29 @@
+{% extends "calculusModule/base_generic.html" %}
+
+{% block stylesheet %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/scoreForm.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <h2>Ajouter un score</h2>
+  <p class="contextDescriptionText">
+    {{ schoolClass }}
+    <br/>
+    <br/>
+    {{ lastWeek }}
+  </p>
+  <form id="addScoreForm" class="gridForm" method="post" action="{% url 'addScore' schoolClass.id %}">
+    {% csrf_token %}
+    <span>Score :</span>
+    <div class="inputLine">{{ form.numericScore }}<span></span></div>
+    <span>Pourcentage de nulls : </span>
+    <div class="inputLine">{{ form.nullScoresPercentage }}<span>%</span></div>
+    <span>Pourcentage de Mathadors : </span>
+    <div class="inputLine">{{ form.mathadorsPercentage }}<span>%</span></div>
+    {{ form.errors }}
+  </form>
+  <div class="submitButtonContainer">
+    <input class="colorfulButton" type="submit" form="addScoreForm" value="Ajouter le score">
+  </div>
+{% endblock %}
