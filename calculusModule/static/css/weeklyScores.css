@@ -20,3 +20,7 @@
 .scoresTableBody tr:nth-child(even){
     background-color: gainsboro;
 }
+
+.bodyLinkNotAsLink {
+    text-decoration: none;
+}

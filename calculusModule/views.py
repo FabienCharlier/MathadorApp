@@ -1,9 +1,10 @@
+import io
 import django.shortcuts as shortcuts
 import django.http as http
 import django.contrib.auth as auth
 from django.contrib.auth.decorators import login_required
 
-from . import forms, weekUtils, scoreUtils, models
+from . import forms, weekUtils, scoreUtils, models, pdfGeneration
 
 @login_required
 def index(request):
@@ -79,3 +80,23 @@ def weeklyScores(request):
     sixiemeLevelScores = models.Score.objects.filter(week=lastWeek, schoolClass__level=sixiemeLevel).order_by('-numericScore','nullScoresPercentage','-mathadorsPercentage')
 
     return shortcuts.render(request, "calculusModule/weeklyScores.html", {'cm2OrderedScores': cm2LevelScores, '6eOrderedScores': sixiemeLevelScores, 'lastWeek': lastWeek})
+
+def downloadPdf(request):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        raise http.Http404
+    lastWeek = weekUtils.getLastWeek()
+    cm2Level = models.SchoolClassLevel.CM2
+    cm2LevelScores = models.Score.objects.filter(week=lastWeek, schoolClass__level=cm2Level).order_by('-numericScore','nullScoresPercentage','-mathadorsPercentage')
+    sixiemeLevel = models.SchoolClassLevel.SIXIEME
+    sixiemeLevelScores = models.Score.objects.filter(week=lastWeek, schoolClass__level=sixiemeLevel).order_by('-numericScore','nullScoresPercentage','-mathadorsPercentage')
+
+    cm2TableData = scoreUtils.formatScoresForPdfTable(cm2LevelScores)
+    cm2RankingData = scoreUtils.formatScoresForPdfPodium(cm2LevelScores)
+    sixiemeTableData = scoreUtils.formatScoresForPdfTable(sixiemeLevelScores)
+    sixiemeRankingData = scoreUtils.formatScoresForPdfPodium(sixiemeLevelScores)
+
+    buffer = io.BytesIO()
+    pdfGeneration.buildPdf(buffer, lastWeek, cm2TableData, sixiemeTableData, cm2RankingData, sixiemeRankingData)
+    buffer.seek(0)
+
+    return http.FileResponse(buffer, as_attachment=True, filename=f"resultats-semaine-{lastWeek.displayNumber}-mathador.pdf")
