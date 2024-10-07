@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-  <h2>Scores de la semaine</h2>
+  <h2>Scores de la semaine n°{{ lastWeek.displayNumber }}, du {{ lastWeek.dateStart|date:"d/m/Y" }} au {{ lastWeek.dateEnd|date:"d/m/Y" }}</h2>
   <h3>CM2</h3>
   <table class="scoresTable">
     <thead class="scoresTableHeader">

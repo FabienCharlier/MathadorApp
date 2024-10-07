@@ -78,4 +78,4 @@ def weeklyScores(request):
     sixiemeLevel = models.SchoolClassLevel.SIXIEME
     sixiemeLevelScores = models.Score.objects.filter(week=lastWeek, schoolClass__level=sixiemeLevel).order_by('-numericScore','nullScoresPercentage','-mathadorsPercentage')
 
-    return shortcuts.render(request, "calculusModule/weeklyScores.html", {'cm2OrderedScores': cm2LevelScores, '6eOrderedScores': sixiemeLevelScores})
+    return shortcuts.render(request, "calculusModule/weeklyScores.html", {'cm2OrderedScores': cm2LevelScores, '6eOrderedScores': sixiemeLevelScores, 'lastWeek': lastWeek})
