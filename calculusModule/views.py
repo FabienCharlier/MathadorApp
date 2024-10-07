@@ -71,7 +71,7 @@ def deleteScore(request, scoreId):
 
 def weeklyScores(request):
     if not request.user.is_authenticated or not request.user.is_staff:
-        return http.Http404
+        raise http.Http404
     lastWeek = weekUtils.getLastWeek()
     cm2Level = models.SchoolClassLevel.CM2
     cm2LevelScores = models.Score.objects.filter(week=lastWeek, schoolClass__level=cm2Level).order_by('-numericScore','nullScoresPercentage','-mathadorsPercentage')
