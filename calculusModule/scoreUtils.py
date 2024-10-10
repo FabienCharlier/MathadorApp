@@ -11,14 +11,15 @@ def getScore(schoolClass, week):
 def areScoresEqual(score1, score2):
     return score1.numericScore == score2.numericScore and score1.nullScoresPercentage == score2.nullScoresPercentage and score1.mathadorsPercentage == score2.mathadorsPercentage
     
-def formatScoresForPdfTable(scores):
+def formatClassDtosForPdfTable(scoreDtos):
     formattedScores = [['Rang', 'Classe', 'Moyenne', 'Score nul', 'Score\nMathador']]
-    i = 1
-    for score in scores:
-        formattedScores.append([i, score.schoolClass.name, score.numericScore, score.nullScoresPercentage, score.mathadorsPercentage])
-        i += 1
+    for scoreDto in scoreDtos:
+        if scoreDto.score is None:
+            formattedScores.append([scoreDto.ranking, scoreDto.schoolClass.name, '-', '-', '-'])
+        else:
+            formattedScores.append([scoreDto.ranking, scoreDto.schoolClass.name, scoreDto.score.numericScore, scoreDto.score.nullScoresPercentage, scoreDto.score.mathadorsPercentage])
     return formattedScores
 
-def formatScoresForPdfPodium(scores):
-    formattedRanking = [scores[0].schoolClass.name, scores[1].schoolClass.name, scores[2].schoolClass.name]
+def formatClassDtosForPdfPodium(scoreDtos):
+    formattedRanking = [scoreDtos[0].schoolClass.name, scoreDtos[1].schoolClass.name, scoreDtos[2].schoolClass.name]
     return formattedRanking
