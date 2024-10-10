@@ -8,7 +8,7 @@ class Week(models.Model):
 
     def __str__(self):
         return f"Semaine {self.displayNumber} ({self.dateStart.strftime('%d/%m/%Y')} - {self.dateEnd.strftime('%d/%m/%Y')})"
-
+    
 class SchoolClassLevel(models.TextChoices):
     CM2 = "CM2", "CM2"
     SIXIEME = "SIXIEME", "Sixieme"

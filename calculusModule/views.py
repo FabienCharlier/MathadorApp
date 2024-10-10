@@ -4,7 +4,7 @@ import django.http as http
 import django.contrib.auth as auth
 from django.contrib.auth.decorators import login_required
 
-from . import forms, weekUtils, scoreUtils, models, pdfGeneration
+from . import forms, weekUtils, scoreUtils, models, pdfGeneration, schoolClassUtils
 
 @login_required
 def index(request):
@@ -75,11 +75,12 @@ def weeklyScores(request):
         raise http.Http404
     lastWeek = weekUtils.getLastWeek()
     cm2Level = models.SchoolClassLevel.CM2
-    cm2LevelScores = models.Score.objects.filter(week=lastWeek, schoolClass__level=cm2Level).order_by('-numericScore','nullScoresPercentage','-mathadorsPercentage')
     sixiemeLevel = models.SchoolClassLevel.SIXIEME
-    sixiemeLevelScores = models.Score.objects.filter(week=lastWeek, schoolClass__level=sixiemeLevel).order_by('-numericScore','nullScoresPercentage','-mathadorsPercentage')
+    
+    sortedCm2ClassesDtos = schoolClassUtils.getSortedClassesForWeekAndLevel(lastWeek, cm2Level)
+    sortedSixiemeClassesDtos = schoolClassUtils.getSortedClassesForWeekAndLevel(lastWeek, sixiemeLevel)
 
-    return shortcuts.render(request, "calculusModule/weeklyScores.html", {'cm2OrderedScores': cm2LevelScores, '6eOrderedScores': sixiemeLevelScores, 'lastWeek': lastWeek})
+    return shortcuts.render(request, "calculusModule/weeklyScores.html", {'sortedCm2ClassesDtos': sortedCm2ClassesDtos, 'sortedSixiemeClassesDtos': sortedSixiemeClassesDtos, 'lastWeek': lastWeek})
 
 def downloadPdf(request):
     if not request.user.is_authenticated or not request.user.is_staff:

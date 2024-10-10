@@ -8,6 +8,9 @@ def getScore(schoolClass, week):
     except models.Score.MultipleObjectsReturned:
         return None
     
+def areScoresEqual(score1, score2):
+    return score1.numericScore == score2.numericScore and score1.nullScoresPercentage == score2.nullScoresPercentage and score1.mathadorsPercentage == score2.mathadorsPercentage
+    
 def formatScoresForPdfTable(scores):
     formattedScores = [['Rang', 'Classe', 'Moyenne', 'Score nul', 'Score\nMathador']]
     i = 1
