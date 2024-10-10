@@ -30,23 +30,35 @@
       </tr>
     </thead>
     <tbody class="scoresTableBody">
-      {% for cm2OrderedScore in cm2OrderedScores %}
+      {% for sortedCm2ClassesDto in sortedCm2ClassesDtos %}
         <tr>
           <td>
-            {{ forloop.counter }}
+            {{ sortedCm2ClassesDto.ranking }}
           </td>
           <td>
-            {{ cm2OrderedScore.schoolClass.name }}
+            {{ sortedCm2ClassesDto.schoolClass.name }}
           </td>
-          <td>
-            {{ cm2OrderedScore.numericScore|floatformat:"2" }}
-          </td>
-          <td>
-            {{ cm2OrderedScore.nullScoresPercentage|floatformat:"1" }} %
-          </td>
-          <td>
-            {{ cm2OrderedScore.mathadorsPercentage|floatformat:"1" }} %
-          </td>
+          {% if sortedCm2ClassesDto.score == None %}
+            <td>
+              -
+            </td>
+            <td>
+              -
+            </td>
+            <td>
+              -
+            </td>
+          {% else %}
+            <td>
+              {{ sortedCm2ClassesDto.score.numericScore|floatformat:"2" }}
+            </td>
+            <td>
+              {{ sortedCm2ClassesDto.score.nullScoresPercentage|floatformat:"1" }} %
+            </td>
+            <td>
+              {{ sortedCm2ClassesDto.score.mathadorsPercentage|floatformat:"1" }} %
+            </td>
+          {% endif %}
         </tr>
       {% endfor %}
     </tbody>
@@ -73,23 +85,35 @@
       </tr>
     </thead>
     <tbody class="scoresTableBody">
-      {% for 6eOrderedScore in 6eOrderedScores %}
+      {% for sortedSixiemeClassesDto in sortedSixiemeClassesDtos %}
         <tr>
           <td>
-            {{ forloop.counter }}
+            {{ sortedSixiemeClassesDto.ranking }}
           </td>
           <td>
-            {{ 6eOrderedScore.schoolClass.name }}
+            {{ sortedSixiemeClassesDto.schoolClass.name }}
           </td>
-          <td>
-            {{ 6eOrderedScore.numericScore|floatformat:"2" }}
-          </td>
-          <td>
-            {{ 6eOrderedScore.nullScoresPercentage|floatformat:"1" }} %
-          </td>
-          <td>
-            {{ 6eOrderedScore.mathadorsPercentage|floatformat:"1" }} %
-          </td>
+          {% if sortedSixiemeClassesDto.score == None %}
+            <td>
+              -
+            </td>
+            <td>
+              -
+            </td>
+            <td>
+              -
+            </td>
+          {% else %}
+            <td>
+              {{ sortedSixiemeClassesDto.score.numericScore|floatformat:"2" }}
+            </td>
+            <td>
+              {{ sortedSixiemeClassesDto.score.nullScoresPercentage|floatformat:"1" }} %
+            </td>
+            <td>
+              {{ sortedSixiemeClassesDto.score.mathadorsPercentage|floatformat:"1" }} %
+            </td>
+          {% endif %}
         </tr>
       {% endfor %}
     </tbody>
