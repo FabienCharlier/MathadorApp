@@ -1,0 +1,54 @@
+<table class="scoresTable">
+    <thead class="scoresTableHeader">
+      <tr>
+        <th>
+          Classement
+        </th>
+        <th>
+          Classe
+        </th>
+        <th>
+          Score
+        </th>
+        <th>
+          Pourcentage de nuls
+        </th>
+        <th>
+          Pourcentage de Mathadors
+        </th>
+      </tr>
+    </thead>
+    <tbody class="scoresTableBody">
+      {% for sortedClassesDto in sortedClassesDtos %}
+        <tr>
+          <td>
+            {{ sortedClassesDto.ranking }}
+          </td>
+          <td>
+            {{ sortedClassesDto.schoolClass.name }}
+          </td>
+          {% if sortedClassesDto.score == None %}
+            <td>
+              -
+            </td>
+            <td>
+              -
+            </td>
+            <td>
+              -
+            </td>
+          {% else %}
+            <td>
+              {{ sortedClassesDto.score.numericScore|floatformat:"2" }}
+            </td>
+            <td>
+              {{ sortedClassesDto.score.nullScoresPercentage|floatformat:"1" }} %
+            </td>
+            <td>
+              {{ sortedClassesDto.score.mathadorsPercentage|floatformat:"1" }} %
+            </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+</table>
