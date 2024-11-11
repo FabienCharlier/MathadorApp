@@ -20,6 +20,18 @@ def adminUserRequired(func):
 
     return wrapperAdminUserRequired
 
+def catchWithErrorMessage(destination):
+    def catchWithErrorMessageInternal(func):
+        def wrapperCatchWithErrorMessage(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except Exception as e:
+                errorMessage = f"Une erreur est survenue : {str(e)}"
+                return redirectWithParams(destination, {'error': errorMessage})
+
+        return wrapperCatchWithErrorMessage
+    return catchWithErrorMessageInternal
+
 def redirectWithParams(url, params=None):
     response = shortcuts.redirect(url)
     if params:
@@ -147,103 +159,94 @@ def emails(request):
     return shortcuts.render(request, "calculusModule/emails.html", createTemplateParamsWithFlashes(request, templateParams))
 
 @adminUserRequired
+@catchWithErrorMessage('emails')
 def sendEmailsReminder(request):
-    try:
-        currentWeek = weekUtils.getLastWeek()
-        classesWithoutScore = models.SchoolClass.objects.exclude(score__week=currentWeek)
+    currentWeek = weekUtils.getLastWeek()
+    classesWithoutScore = models.SchoolClass.objects.exclude(score__week=currentWeek)
 
-        teachersEmail = set()
-        for classWithoutScore in classesWithoutScore :
-            teachersEmail.add(classWithoutScore.teacher.email)
-        
-        htmlMessage = render_to_string('calculusModule/htmlEmails/reminderMail.html')
-        plainMessage = strip_tags(htmlMessage)
-        email = EmailMultiAlternatives(
-            mailContent.newWeekMailSubject(currentWeek),
-            plainMessage,
-            settings.EMAIL_HOST_USER,
-            list(teachersEmail),
-        )
-        email.attach_alternative(htmlMessage, "text/html")
-        email.send()
+    teachersEmail = set()
+    for classWithoutScore in classesWithoutScore :
+        teachersEmail.add(classWithoutScore.teacher.email)
+    
+    htmlMessage = render_to_string('calculusModule/htmlEmails/reminderMail.html')
+    plainMessage = strip_tags(htmlMessage)
+    email = EmailMultiAlternatives(
+        mailContent.newWeekMailSubject(currentWeek),
+        plainMessage,
+        settings.EMAIL_HOST_USER,
+        list(teachersEmail),
+    )
+    email.attach_alternative(htmlMessage, "text/html")
+    email.send()
 
-        return redirectWithParams('emails', {'success': 'Les rappels ont bien été envoyés'})
-    except Exception as e:
-        errorMessage = f"Une erreur est survenue lors de l'envoi des mails de rappel : {str(e)}"
-        return redirectWithParams('emails', {'error': errorMessage})
+    return redirectWithParams('emails', {'success': 'Les rappels ont bien été envoyés'})
 
 @adminUserRequired
+@catchWithErrorMessage('emails')
 def sendEmailsNewWeek(request):
-    try:
-        currentWeek = weekUtils.getLastWeek()
+    currentWeek = weekUtils.getLastWeek()
 
-        schoolClasses = models.SchoolClass.objects.all()
-        teachersEmail = set()
-        for schoolClass in schoolClasses :
-            teachersEmail.add(schoolClass.teacher.email)
+    schoolClasses = models.SchoolClass.objects.all()
+    teachersEmail = set()
+    for schoolClass in schoolClasses :
+        teachersEmail.add(schoolClass.teacher.email)
 
-        if request.method == "POST":
-            newWeekMailForm = forms.NewWeekMailForm(request.POST)
-            newWeekMailFormCurrentNumbers = newWeekMailForm['currentNumbers'].value()
-            newWeekMailFormPersonnalizedText = newWeekMailForm['personnalizedText'].value()
-            request.session['newWeekMailFormCurrentNumbers'] = newWeekMailFormCurrentNumbers
-            request.session['newWeekMailFormPersonnalizedText'] = newWeekMailFormPersonnalizedText
-            if newWeekMailForm.is_valid():
-                htmlMessage = render_to_string(
-                    'calculusModule/htmlEmails/newWeekMail.html',
-                    {'currentNumbers': newWeekMailFormCurrentNumbers, 'personnalizedText': newWeekMailFormPersonnalizedText, 'currentWeek': currentWeek}
-                )
-                plainMessage = strip_tags(htmlMessage)
-                email = EmailMultiAlternatives(
-                    mailContent.newWeekMailSubject(currentWeek),
-                    plainMessage,
-                    settings.EMAIL_HOST_USER,
-                    list(teachersEmail),
-                )
-                email.attach_alternative(htmlMessage, "text/html")
-                email.send()
-        return redirectWithParams('emails', {'success': 'Le nouveau tirage a bien été envoyé'})
-    except Exception as e:
-        errorMessage = f"Une erreur est survenue lors de l'envoi des mails de rappel : {str(e)}"
-        return redirectWithParams('emails', {'error': errorMessage})
+    if request.method == "POST":
+        newWeekMailForm = forms.NewWeekMailForm(request.POST)
+        newWeekMailFormCurrentNumbers = newWeekMailForm['currentNumbers'].value()
+        newWeekMailFormPersonnalizedText = newWeekMailForm['personnalizedText'].value()
+        request.session['newWeekMailFormCurrentNumbers'] = newWeekMailFormCurrentNumbers
+        request.session['newWeekMailFormPersonnalizedText'] = newWeekMailFormPersonnalizedText
+        if newWeekMailForm.is_valid():
+            htmlMessage = render_to_string(
+                'calculusModule/htmlEmails/newWeekMail.html',
+                {'currentNumbers': newWeekMailFormCurrentNumbers, 'personnalizedText': newWeekMailFormPersonnalizedText, 'currentWeek': currentWeek}
+            )
+            plainMessage = strip_tags(htmlMessage)
+            email = EmailMultiAlternatives(
+                mailContent.newWeekMailSubject(currentWeek),
+                plainMessage,
+                settings.EMAIL_HOST_USER,
+                list(teachersEmail),
+            )
+            email.attach_alternative(htmlMessage, "text/html")
+            email.send()
+    return redirectWithParams('emails', {'success': 'Le nouveau tirage a bien été envoyé'})
 
 @adminUserRequired
+@catchWithErrorMessage('emails')
 def sendEmailsResults(request):
-    try:
-        currentWeek = weekUtils.getLastWeek()
+    currentWeek = weekUtils.getLastWeek()
 
-        schoolClasses = models.SchoolClass.objects.all()
-        teachersEmail = set()
-        for schoolClass in schoolClasses :
-            teachersEmail.add(schoolClass.teacher.email)
+    schoolClasses = models.SchoolClass.objects.all()
+    teachersEmail = set()
+    for schoolClass in schoolClasses :
+        teachersEmail.add(schoolClass.teacher.email)
 
-        if request.method == "POST":
-            resultsMailForm = forms.ResultsMailForm(request.POST)
-            resultsMailFormPersonnalizedText = resultsMailForm['personnalizedText'].value()
-            request.session['resultsMailFormPersonnalizedText'] = resultsMailFormPersonnalizedText
-            if resultsMailForm.is_valid():
-                htmlMessage = render_to_string(
-                    'calculusModule/htmlEmails/resultsMail.html',
-                    {'personnalizedText': resultsMailFormPersonnalizedText, 'currentWeek': currentWeek}
-                )
-                plainMessage = strip_tags(htmlMessage)
-                email = EmailMultiAlternatives(
-                    mailContent.resultsMailSubject(currentWeek),
-                    plainMessage,
-                    settings.EMAIL_HOST_USER,
-                    list(teachersEmail),
-                )
-                email.attach_alternative(htmlMessage, "text/html")
+    if request.method == "POST":
+        resultsMailForm = forms.ResultsMailForm(request.POST)
+        resultsMailFormPersonnalizedText = resultsMailForm['personnalizedText'].value()
+        request.session['resultsMailFormPersonnalizedText'] = resultsMailFormPersonnalizedText
+        if resultsMailForm.is_valid():
+            htmlMessage = render_to_string(
+                'calculusModule/htmlEmails/resultsMail.html',
+                {'personnalizedText': resultsMailFormPersonnalizedText, 'currentWeek': currentWeek}
+            )
+            plainMessage = strip_tags(htmlMessage)
+            email = EmailMultiAlternatives(
+                mailContent.resultsMailSubject(currentWeek),
+                plainMessage,
+                settings.EMAIL_HOST_USER,
+                list(teachersEmail),
+            )
+            email.attach_alternative(htmlMessage, "text/html")
 
-                buffer=BytesIO()
-                pdfGeneration.generatePdf(currentWeek, buffer)
-                pdf=buffer.getvalue()
-                buffer.close()
-                email.attach('resultats.pdf',pdf,'application/pdf')
+            buffer=BytesIO()
+            pdfGeneration.generatePdf(currentWeek, buffer)
+            pdf=buffer.getvalue()
+            buffer.close()
+            email.attach('resultats.pdf',pdf,'application/pdf')
 
-                email.send()
-                
-        return redirectWithParams('emails', {'success': 'Les résultats ont bien été envoyés'})
-    except Exception as e:
-        errorMessage = f"Une erreur est survenue lors de l'envoi des mails de rappel : {str(e)}"
-        return redirectWithParams('emails', {'error': errorMessage})
+            email.send()
+            
+    return redirectWithParams('emails', {'success': 'Les résultats ont bien été envoyés'})
