@@ -7,4 +7,9 @@
 
 {% block content %}
   <h2>Envoi d'emails</h2>
+  <h3>Mail de rappel</h3>
+  <form action="{% url 'sendEmailsReminder' %}" method="post" class="verticalForm">
+    {% csrf_token %}
+    <input class="colorfulButton" type="submit" value="Envoyer les mails de rappel">
+  </form>
 {% endblock %}

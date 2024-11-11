@@ -4,8 +4,11 @@ import django.shortcuts as shortcuts
 import django.http as http
 import django.contrib.auth as auth
 from django.contrib.auth.decorators import login_required
-
-from . import forms, weekUtils, scoreUtils, models, pdfGeneration, schoolClassUtils
+from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string
+from . import forms, weekUtils, scoreUtils, models, pdfGeneration, schoolClassUtils, mailContent
 
 def adminUserRequired(func):
     def wrapperAdminUserRequired(*args, **kwargs):
@@ -141,3 +144,29 @@ def emails(request):
     templateParams = {'newWeekMailForm': newWeekMailForm, 'resultsMailForm': resultsMailForm}
 
     return shortcuts.render(request, "calculusModule/emails.html", createTemplateParamsWithFlashes(request, templateParams))
+
+@adminUserRequired
+def sendEmailsReminder(request):
+    try:
+        currentWeek = weekUtils.getLastWeek()
+        classesWithoutScore = models.SchoolClass.objects.exclude(score__week=currentWeek)
+
+        teachersEmail = set()
+        for classWithoutScore in classesWithoutScore :
+            teachersEmail.add(classWithoutScore.teacher.email)
+        
+        htmlMessage = render_to_string('calculusModule/htmlEmails/reminderMail.html')
+        plainMessage = strip_tags(htmlMessage)
+        email = EmailMultiAlternatives(
+            mailContent.newWeekMailSubject(currentWeek),
+            plainMessage,
+            settings.EMAIL_HOST_USER,
+            list(teachersEmail),
+        )
+        email.attach_alternative(htmlMessage, "text/html")
+        email.send()
+
+        return redirectWithParams('emails', {'success': 'Les rappels ont bien été envoyés'})
+    except Exception as e:
+        errorMessage = f"Une erreur est survenue lors de l'envoi des mails de rappel : {str(e)}"
+        return redirectWithParams('emails', {'error': errorMessage})

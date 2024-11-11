@@ -12,4 +12,5 @@ urlpatterns = [
     path('weekly-scores', views.weeklyScores, name="weeklyScores"),
     path('downloadPdf', views.downloadPdf, name="downloadPdf"),
     path('emails', views.emails, name="emails"),
+    path('sendEmails/reminder', views.sendEmailsReminder, name="sendEmailsReminder"),
 ]
