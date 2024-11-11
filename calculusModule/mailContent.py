@@ -3,3 +3,6 @@ def reminderMailSubject(currentWeek):
 
 def newWeekMailSubject(currentWeek):
     return f'Mathador - Tirage de la {currentWeek.fullInlineDisplay()}'
+
+def resultsMailSubject(currentWeek):
+    return f'Mathador - Résultats de la {currentWeek.fullInlineDisplay()}'

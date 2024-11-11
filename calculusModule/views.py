@@ -8,6 +8,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 from django.utils.html import strip_tags
 from django.template.loader import render_to_string
+from io import BytesIO
 from . import forms, weekUtils, scoreUtils, models, pdfGeneration, schoolClassUtils, mailContent
 
 def adminUserRequired(func):
@@ -202,6 +203,47 @@ def sendEmailsNewWeek(request):
                 email.attach_alternative(htmlMessage, "text/html")
                 email.send()
         return redirectWithParams('emails', {'success': 'Le nouveau tirage a bien été envoyé'})
+    except Exception as e:
+        errorMessage = f"Une erreur est survenue lors de l'envoi des mails de rappel : {str(e)}"
+        return redirectWithParams('emails', {'error': errorMessage})
+
+@adminUserRequired
+def sendEmailsResults(request):
+    try:
+        currentWeek = weekUtils.getLastWeek()
+
+        schoolClasses = models.SchoolClass.objects.all()
+        teachersEmail = set()
+        for schoolClass in schoolClasses :
+            teachersEmail.add(schoolClass.teacher.email)
+
+        if request.method == "POST":
+            resultsMailForm = forms.ResultsMailForm(request.POST)
+            resultsMailFormPersonnalizedText = resultsMailForm['personnalizedText'].value()
+            request.session['resultsMailFormPersonnalizedText'] = resultsMailFormPersonnalizedText
+            if resultsMailForm.is_valid():
+                htmlMessage = render_to_string(
+                    'calculusModule/htmlEmails/resultsMail.html',
+                    {'personnalizedText': resultsMailFormPersonnalizedText, 'currentWeek': currentWeek}
+                )
+                plainMessage = strip_tags(htmlMessage)
+                email = EmailMultiAlternatives(
+                    mailContent.resultsMailSubject(currentWeek),
+                    plainMessage,
+                    settings.EMAIL_HOST_USER,
+                    list(teachersEmail),
+                )
+                email.attach_alternative(htmlMessage, "text/html")
+
+                buffer=BytesIO()
+                pdfGeneration.generatePdf(currentWeek, buffer)
+                pdf=buffer.getvalue()
+                buffer.close()
+                email.attach('resultats.pdf',pdf,'application/pdf')
+
+                email.send()
+                
+        return redirectWithParams('emails', {'success': 'Les résultats ont bien été envoyés'})
     except Exception as e:
         errorMessage = f"Une erreur est survenue lors de l'envoi des mails de rappel : {str(e)}"
         return redirectWithParams('emails', {'error': errorMessage})

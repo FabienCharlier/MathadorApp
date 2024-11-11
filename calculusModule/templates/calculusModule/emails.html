@@ -19,4 +19,11 @@
     {{ newWeekMailForm }}
     <input class="colorfulButton" type="submit" value="Envoyer le mail de nouveau tirage">
   </form>
+  <hr>
+  <h3>Mail de résultats</h3>
+  <form action="{% url 'sendEmailsResults' %}" method="post" class="verticalForm">
+    {% csrf_token %}
+    {{ resultsMailForm }}
+    <input class="colorfulButton" type="submit" value="Envoyer le mail de résultats ">
+  </form>
 {% endblock %}
