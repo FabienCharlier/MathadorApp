@@ -11,4 +11,5 @@ urlpatterns = [
     path('delete-score/<int:scoreId>', views.deleteScore, name="deleteScore"),
     path('weekly-scores', views.weeklyScores, name="weeklyScores"),
     path('downloadPdf', views.downloadPdf, name="downloadPdf"),
+    path('emails', views.emails, name="emails"),
 ]

@@ -114,3 +114,30 @@ def downloadPdf(request):
     buffer.seek(0)
 
     return http.FileResponse(buffer, as_attachment=True, filename=f"resultats-semaine-{lastWeek.displayNumber}-mathador.pdf")
+
+@adminUserRequired
+def emails(request):
+    if 'newWeekMailFormCurrentNumbers' in request.session:
+        newWeekMailFormCurrentNumbers = request.session['newWeekMailFormCurrentNumbers']
+    else:
+        newWeekMailFormCurrentNumbers = "Tirage de la semaine"
+    if 'newWeekMailFormPersonnalizedText' in request.session:
+        newWeekMailFormPersonnalizedText = request.session['newWeekMailFormPersonnalizedText']
+    else:
+        newWeekMailFormPersonnalizedText = "Texte personnalisé"
+    newWeekMailForm = forms.NewWeekMailForm({
+        'currentNumbers': newWeekMailFormCurrentNumbers,
+        'personnalizedText': newWeekMailFormPersonnalizedText
+    })
+
+    if 'resultsMailFormPersonnalizedText' in request.session:
+        resultsMailFormPersonnalizedText = request.session['resultsMailFormPersonnalizedText']
+    else:
+        resultsMailFormPersonnalizedText = "Texte personnalisé"
+    resultsMailForm = forms.ResultsMailForm({
+        'personnalizedText': resultsMailFormPersonnalizedText,
+    })
+
+    templateParams = {'newWeekMailForm': newWeekMailForm, 'resultsMailForm': resultsMailForm}
+
+    return shortcuts.render(request, "calculusModule/emails.html", createTemplateParamsWithFlashes(request, templateParams))
