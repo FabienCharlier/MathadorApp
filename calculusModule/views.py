@@ -93,19 +93,9 @@ def weeklyScores(request):
 @adminUserRequired
 def downloadPdf(request):
     lastWeek = weekUtils.getLastWeek()
-    cm2Level = models.SchoolClassLevel.CM2
-    sixiemeLevel = models.SchoolClassLevel.SIXIEME
-
-    sortedCm2ClassesDtos = schoolClassUtils.getSortedClassesForWeekAndLevel(lastWeek, cm2Level)
-    sortedSixiemeClassesDtos = schoolClassUtils.getSortedClassesForWeekAndLevel(lastWeek, sixiemeLevel)
-    
-    cm2TableData = scoreUtils.formatClassDtosForPdfTable(sortedCm2ClassesDtos)
-    cm2RankingData = scoreUtils.formatClassDtosForPdfPodium(sortedCm2ClassesDtos)
-    sixiemeTableData = scoreUtils.formatClassDtosForPdfTable(sortedSixiemeClassesDtos)
-    sixiemeRankingData = scoreUtils.formatClassDtosForPdfPodium(sortedSixiemeClassesDtos)
 
     buffer = io.BytesIO()
-    pdfGeneration.buildPdf(buffer, lastWeek, cm2TableData, sixiemeTableData, cm2RankingData, sixiemeRankingData)
+    pdfGeneration.generatePdf(lastWeek, buffer)
     buffer.seek(0)
 
     return http.FileResponse(buffer, as_attachment=True, filename=f"resultats-semaine-{lastWeek.displayNumber}-mathador.pdf")

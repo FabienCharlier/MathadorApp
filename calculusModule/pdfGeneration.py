@@ -2,6 +2,7 @@ from reportlab.lib.pagesizes import A4, landscape
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Image, Spacer, Paragraph
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle
+from . import models, schoolClassUtils, scoreUtils
 
 def buildFirstColumn(primaryTableData, collegeTableData):
     tableStyle = TableStyle([
@@ -63,3 +64,17 @@ def buildPdf(buffer, week, primaryTableData, collegeTableData, primaryRanking, c
         bottomMargin=10,
     )
     pdf.build(buildFullPage(width - 30, week, primaryTableData, collegeTableData, primaryRanking, collegeRanking))
+
+def generatePdf(currentWeek, buffer):
+    cm2Level = models.SchoolClassLevel.CM2
+    sixiemeLevel = models.SchoolClassLevel.SIXIEME
+
+    sortedCm2ClassesDtos = schoolClassUtils.getSortedClassesForWeekAndLevel(currentWeek, cm2Level)
+    sortedSixiemeClassesDtos = schoolClassUtils.getSortedClassesForWeekAndLevel(currentWeek, sixiemeLevel)
+    
+    cm2TableData = scoreUtils.formatClassDtosForPdfTable(sortedCm2ClassesDtos)
+    cm2RankingData = scoreUtils.formatClassDtosForPdfPodium(sortedCm2ClassesDtos)
+    sixiemeTableData = scoreUtils.formatClassDtosForPdfTable(sortedSixiemeClassesDtos)
+    sixiemeRankingData = scoreUtils.formatClassDtosForPdfPodium(sortedSixiemeClassesDtos)
+
+    buildPdf(buffer, currentWeek, cm2TableData, sixiemeTableData, cm2RankingData, sixiemeRankingData)
