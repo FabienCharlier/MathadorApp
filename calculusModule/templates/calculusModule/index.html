@@ -7,7 +7,7 @@
 
 {% block content %}
   <h2>Bonjour, {{ user.first_name }} {{ user.last_name }}</h2>
-  <p>Semaine n°{{ lastWeek.displayNumber }}, du {{ lastWeek.dateStart|date:"d/m/Y" }} au {{ lastWeek.dateEnd|date:"d/m/Y" }}</p>
+  <p>Semaine n°{{ lastWeek.displayNumber }}, {{ lastWeek.displayDates }}</p>
   <h2>Récap de vos résultats de la semaine :</h2>
   {% if allClasses|length == 0 %}
     <p>Vous n'avez pas encore de classes renseignées. Contactez l'administrateur pour enregistrer des classes</p>
