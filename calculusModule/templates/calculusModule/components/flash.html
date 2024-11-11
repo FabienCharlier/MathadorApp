@@ -1,0 +1,32 @@
+{% if successMessage != None %}
+    <div id="successFlash" class="success flash">
+        <span>
+            {{ successMessage }}
+        </span>
+        <button class="closeButton" onclick="document.getElementById('successFlash').remove()"">
+            X
+        </button>
+    </div>
+{% endif %}
+
+{% if warningMessage != None %}
+    <div id="warningFlash" class="warning flash">
+        <span>
+            {{ warningMessage }}
+        </span>
+        <button class="closeButton" onclick="document.getElementById('warningFlash').remove()"">
+            X
+        </button>
+    </div>
+{% endif %}
+
+{% if errorMessage != None %}
+    <div id="errorFlash" class="error flash">
+        <span>
+            {{ errorMessage }}
+        </span>
+        <button class="closeButton" onclick="document.getElementById('errorFlash').remove()"">
+            X
+        </button>
+    </div>
+{% endif %}

@@ -1,0 +1,29 @@
+{% extends "calculusModule/base_generic.html" %}
+
+{% block stylesheet %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/emails.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <h2>Envoi d'emails</h2>
+  <h3>Mail de rappel</h3>
+  <form action="{% url 'sendEmailsReminder' %}" method="post" class="verticalForm">
+    {% csrf_token %}
+    <input class="colorfulButton" type="submit" value="Envoyer les mails de rappel">
+  </form>
+  <hr>
+  <h3>Mail de nouveau tirage</h3>
+  <form action="{% url 'sendEmailsNewWeek' %}" method="post" class="verticalForm">
+    {% csrf_token %}
+    {{ newWeekMailForm }}
+    <input class="colorfulButton" type="submit" value="Envoyer le mail de nouveau tirage">
+  </form>
+  <hr>
+  <h3>Mail de résultats</h3>
+  <form action="{% url 'sendEmailsResults' %}" method="post" class="verticalForm">
+    {% csrf_token %}
+    {{ resultsMailForm }}
+    <input class="colorfulButton" type="submit" value="Envoyer le mail de résultats ">
+  </form>
+{% endblock %}
