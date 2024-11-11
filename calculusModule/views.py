@@ -59,14 +59,12 @@ def addScore(request, classId):
 def editScore(request, scoreId):
     previousScore = models.Score.objects.get(pk=scoreId)
     if request.method == 'POST':
-        print('PATCH detected')
         addScoreForm = forms.AddScoreForm(request.POST)
         if addScoreForm.is_valid():
             newScore = addScoreForm.save(commit=False)
             models.Score.objects.filter(pk=scoreId).update(numericScore=newScore.numericScore, nullScoresPercentage=newScore.nullScoresPercentage, mathadorsPercentage=newScore.mathadorsPercentage)
             return shortcuts.redirect('index')
     else:
-        print('PATCH not detected')
         addScoreForm = forms.AddScoreForm(instance=previousScore)
     return shortcuts.render(request, "calculusModule/editScore.html", {'form': addScoreForm, 'previousScore': previousScore})
 
