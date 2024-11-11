@@ -170,3 +170,38 @@ def sendEmailsReminder(request):
     except Exception as e:
         errorMessage = f"Une erreur est survenue lors de l'envoi des mails de rappel : {str(e)}"
         return redirectWithParams('emails', {'error': errorMessage})
+
+@adminUserRequired
+def sendEmailsNewWeek(request):
+    try:
+        currentWeek = weekUtils.getLastWeek()
+
+        schoolClasses = models.SchoolClass.objects.all()
+        teachersEmail = set()
+        for schoolClass in schoolClasses :
+            teachersEmail.add(schoolClass.teacher.email)
+
+        if request.method == "POST":
+            newWeekMailForm = forms.NewWeekMailForm(request.POST)
+            newWeekMailFormCurrentNumbers = newWeekMailForm['currentNumbers'].value()
+            newWeekMailFormPersonnalizedText = newWeekMailForm['personnalizedText'].value()
+            request.session['newWeekMailFormCurrentNumbers'] = newWeekMailFormCurrentNumbers
+            request.session['newWeekMailFormPersonnalizedText'] = newWeekMailFormPersonnalizedText
+            if newWeekMailForm.is_valid():
+                htmlMessage = render_to_string(
+                    'calculusModule/htmlEmails/newWeekMail.html',
+                    {'currentNumbers': newWeekMailFormCurrentNumbers, 'personnalizedText': newWeekMailFormPersonnalizedText, 'currentWeek': currentWeek}
+                )
+                plainMessage = strip_tags(htmlMessage)
+                email = EmailMultiAlternatives(
+                    mailContent.newWeekMailSubject(currentWeek),
+                    plainMessage,
+                    settings.EMAIL_HOST_USER,
+                    list(teachersEmail),
+                )
+                email.attach_alternative(htmlMessage, "text/html")
+                email.send()
+        return redirectWithParams('emails', {'success': 'Le nouveau tirage a bien été envoyé'})
+    except Exception as e:
+        errorMessage = f"Une erreur est survenue lors de l'envoi des mails de rappel : {str(e)}"
+        return redirectWithParams('emails', {'error': errorMessage})

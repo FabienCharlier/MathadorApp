@@ -12,4 +12,11 @@
     {% csrf_token %}
     <input class="colorfulButton" type="submit" value="Envoyer les mails de rappel">
   </form>
+  <hr>
+  <h3>Mail de nouveau tirage</h3>
+  <form action="{% url 'sendEmailsNewWeek' %}" method="post" class="verticalForm">
+    {% csrf_token %}
+    {{ newWeekMailForm }}
+    <input class="colorfulButton" type="submit" value="Envoyer le mail de nouveau tirage">
+  </form>
 {% endblock %}
