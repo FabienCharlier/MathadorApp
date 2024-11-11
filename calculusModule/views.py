@@ -1,4 +1,5 @@
 import io
+import urllib
 import django.shortcuts as shortcuts
 import django.http as http
 import django.contrib.auth as auth
@@ -14,6 +15,22 @@ def adminUserRequired(func):
         return func(*args, **kwargs)
 
     return wrapperAdminUserRequired
+
+def redirectWithParams(url, params=None):
+    response = shortcuts.redirect(url)
+    if params:
+        query_string = urllib.parse.urlencode(params)
+        response['Location'] += '?' + query_string
+    return response
+
+def createTemplateParamsWithFlashes(request, templateParams):
+    if 'success' in request.GET:
+        templateParams['successMessage'] = request.GET['success']
+    if 'warning' in request.GET:
+        templateParams['warningMessage'] = request.GET['warning']
+    if 'error' in request.GET:
+        templateParams['errorMessage'] = request.GET['error']
+    return templateParams
 
 @login_required
 def index(request):
