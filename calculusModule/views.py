@@ -6,6 +6,15 @@ from django.contrib.auth.decorators import login_required
 
 from . import forms, weekUtils, scoreUtils, models, pdfGeneration, schoolClassUtils
 
+def adminUserRequired(func):
+    def wrapperAdminUserRequired(*args, **kwargs):
+        request = args[0]
+        if not request.user.is_authenticated or not request.user.is_staff:
+            raise http.Http404
+        return func(*args, **kwargs)
+
+    return wrapperAdminUserRequired
+
 @login_required
 def index(request):
     lastWeek = weekUtils.getLastWeek()
@@ -70,9 +79,8 @@ def deleteScore(request, scoreId):
         previousScore = models.Score.objects.get(pk=scoreId)
     return shortcuts.render(request, "calculusModule/deleteScore.html", {'score': previousScore})
 
+@adminUserRequired
 def weeklyScores(request):
-    if not request.user.is_authenticated or not request.user.is_staff:
-        raise http.Http404
     lastWeek = weekUtils.getLastWeek()
     cm2Level = models.SchoolClassLevel.CM2
     sixiemeLevel = models.SchoolClassLevel.SIXIEME
@@ -82,9 +90,8 @@ def weeklyScores(request):
 
     return shortcuts.render(request, "calculusModule/weeklyScores.html", {'sortedCm2ClassesDtos': sortedCm2ClassesDtos, 'sortedSixiemeClassesDtos': sortedSixiemeClassesDtos, 'lastWeek': lastWeek})
 
+@adminUserRequired
 def downloadPdf(request):
-    if not request.user.is_authenticated or not request.user.is_staff:
-        raise http.Http404
     lastWeek = weekUtils.getLastWeek()
     cm2Level = models.SchoolClassLevel.CM2
     sixiemeLevel = models.SchoolClassLevel.SIXIEME
