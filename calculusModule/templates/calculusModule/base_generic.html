@@ -29,7 +29,13 @@
           {% endif %}
         {% endblock %}
       </div>
-      <div class="contentViewport"><div class="contentContainer">{% block content %}{% endblock %}</div></div>
+      <div class="contentViewport">
+        <div class="contentContainer">
+          {% include "calculusModule/components/flash.html" %}
+          {% block content %}
+          {% endblock %}
+        </div>
+      </div>
     </div>  
   </body>
 </html>
