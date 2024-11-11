@@ -26,3 +26,10 @@ class AddScoreForm(forms.ModelForm):
     class Meta:
         model = models.Score
         fields = ('numericScore', 'nullScoresPercentage', 'mathadorsPercentage')
+
+class NewWeekMailForm(forms.Form):
+    currentNumbers = forms.CharField(label="Tirage de la semaine", max_length=100)
+    personnalizedText = forms.CharField(label="Texte personnalisé", widget=forms.Textarea(attrs={"rows":"5"}))
+
+class ResultsMailForm(forms.Form):
+    personnalizedText = forms.CharField(label="Texte personnalisé", widget=forms.Textarea(attrs={"rows":"5"}))
