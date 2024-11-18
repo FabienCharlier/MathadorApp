@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User as DjangoUser
-import locale
 
 class Week(models.Model):
     dateStart = models.DateField(null=False, blank=False, verbose_name="Date de début")
@@ -14,11 +13,24 @@ class Week(models.Model):
         return f"semaine {self.displayNumber} {self.displayDates()}"
     
     def displayDates(self):
-        locale.setlocale(locale.LC_TIME, "fr_FR.utf8")
+        months = {
+            1: "janvier",
+            2: "février",
+            3: "mars",
+            4: "avril",
+            5: "mai",
+            6: "juin",
+            7: "juillet",
+            8: "août",
+            9: "septembre",
+            10: "octobre",
+            11: "novembre",
+            12: "décembre"
+        }
         if self.dateStart.month == self.dateEnd.month:
-            return f'du {self.dateStart.day} au {self.dateEnd.day} {self.dateStart.strftime("%B")}'
+            return f'du {self.dateStart.day} au {self.dateEnd.day} {months[self.dateStart.month]}'
         else:
-            return f'du {self.dateStart.day} {self.dateStart.strftime("%B")} au {self.dateEnd.day} {self.dateEnd.strftime("%B")}'
+            return f'du {self.dateStart.day} {months[self.dateStart.month]} au {self.dateEnd.day} {months[self.dateEnd.month]}'
     
 class SchoolClassLevel(models.TextChoices):
     CM2 = "CM2", "CM2"
