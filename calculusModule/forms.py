@@ -29,6 +29,7 @@ class AddScoreForm(forms.ModelForm):
 
 class NewWeekMailForm(forms.Form):
     currentNumbers = forms.CharField(label="Tirage de la semaine", max_length=100)
+    target = forms.CharField(label="Tirage de la semaine", max_length=20)
     personnalizedText = forms.CharField(label="Texte personnalisé", widget=forms.Textarea(attrs={"rows":"5"}))
 
 class ResultsMailForm(forms.Form):
