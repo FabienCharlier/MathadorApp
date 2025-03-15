@@ -137,12 +137,20 @@ def emails(request):
         newWeekMailFormCurrentNumbers = request.session['newWeekMailFormCurrentNumbers']
     else:
         newWeekMailFormCurrentNumbers = "Tirage de la semaine"
+
+    if 'newWeekMailFormTarget' in request.session:
+        newWeekMailFormTarget = request.session['newWeekMailFormTarget']
+    else:
+        newWeekMailFormTarget = "Cible"
+
     if 'newWeekMailFormPersonnalizedText' in request.session:
         newWeekMailFormPersonnalizedText = request.session['newWeekMailFormPersonnalizedText']
     else:
         newWeekMailFormPersonnalizedText = "Texte personnalisé"
+
     newWeekMailForm = forms.NewWeekMailForm({
         'currentNumbers': newWeekMailFormCurrentNumbers,
+        'target': newWeekMailFormTarget,
         'personnalizedText': newWeekMailFormPersonnalizedText
     })
 
@@ -150,6 +158,7 @@ def emails(request):
         resultsMailFormPersonnalizedText = request.session['resultsMailFormPersonnalizedText']
     else:
         resultsMailFormPersonnalizedText = "Texte personnalisé"
+
     resultsMailForm = forms.ResultsMailForm({
         'personnalizedText': resultsMailFormPersonnalizedText,
     })
@@ -194,13 +203,17 @@ def sendEmailsNewWeek(request):
     if request.method == "POST":
         newWeekMailForm = forms.NewWeekMailForm(request.POST)
         newWeekMailFormCurrentNumbers = newWeekMailForm['currentNumbers'].value()
+        newWeekMailFormTarget = newWeekMailForm['target'].value()
         newWeekMailFormPersonnalizedText = newWeekMailForm['personnalizedText'].value()
+
         request.session['newWeekMailFormCurrentNumbers'] = newWeekMailFormCurrentNumbers
+        request.session['newWeekMailFormTarget'] = newWeekMailFormTarget
         request.session['newWeekMailFormPersonnalizedText'] = newWeekMailFormPersonnalizedText
+
         if newWeekMailForm.is_valid():
             htmlMessage = render_to_string(
                 'calculusModule/htmlEmails/newWeekMail.html',
-                {'currentNumbers': newWeekMailFormCurrentNumbers, 'personnalizedText': newWeekMailFormPersonnalizedText, 'currentWeek': currentWeek}
+                {'currentNumbers': newWeekMailFormCurrentNumbers, 'personnalizedText': newWeekMailFormPersonnalizedText, 'currentWeek': currentWeek, 'target': newWeekMailFormTarget}
             )
             plainMessage = strip_tags(htmlMessage)
             email = EmailMultiAlternatives(
