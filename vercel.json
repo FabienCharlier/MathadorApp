@@ -1,28 +1,46 @@
 {
-    "version": 2,
-    "builds": [{
-        "src": "djangoCalculusApp/wsgi.py",
-        "use": "@vercel/python",
-        "config": {
-            "maxLambdaSize": "15mb",
-            "runtime": "python3.9"
-        }
-    }, {
-        "src": "build_files.sh",
-        "use": "@vercel/static-build",
-        "config": {
-            "distDir": "staticfiles_build"
-        }
-    }],
-    "routes": [{
-        "src": "/static/(.*)",
-        "dest": "/static/$1",
-        "headers": {
-            "Cache-Control": "max-age=31536000"
-        }
+  "version": 2,
+  "builds": [
+    {
+      "src": "djangoCalculusApp/wsgi.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.9"
+      }
     },
     {
-        "src": "/(.*)",
-        "dest": "djangoCalculusApp/wsgi.py"
-    }]
+      "src": "build_files.sh",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "staticfiles_build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "headers": {
+        "Location": "https://mathador-app.vercel.app/$1"
+      },
+      "status": 301,
+      "has": [
+        {
+          "type": "host",
+          "value": "www.mathador-app.vercel.app"
+        }
+      ]
+    },
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1",
+      "headers": {
+        "Cache-Control": "max-age=31536000"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "djangoCalculusApp/wsgi.py"
+    }
+  ]
 }
