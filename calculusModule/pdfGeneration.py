@@ -38,7 +38,11 @@ def buildSecondColumn(primaryRanking, collegeRanking):
 
 def buildFullPage(width, week, primaryTableData, collegeTableData, primaryRanking, collegeRanking):
     titleStyle = ParagraphStyle(name="titleStyle",fontName="Helvetica-Bold", fontSize=14)
-    title = Paragraph(f"<u>CLASSEMENT DU MATHADOR : SEMAINE {week.displayNumber} DU {week.dateStart.strftime('%d/%m/%Y')} au {week.dateEnd.strftime('%d/%m/%Y')}</u>", style=titleStyle)
+
+    if week is None:
+        title = Paragraph("<u>CLASSEMENT GENERAL DU MATHADOR</u>", style=titleStyle)
+    else:
+        title = Paragraph(f"<u>CLASSEMENT DU MATHADOR : SEMAINE {week.displayNumber} DU {week.dateStart.strftime('%d/%m/%Y')} au {week.dateEnd.strftime('%d/%m/%Y')}</u>", style=titleStyle)
 
     tablePartWidth = width * 2 / 3
     imagePartWidth = width * 1 / 3
@@ -65,7 +69,7 @@ def buildPdf(buffer, week, primaryTableData, collegeTableData, primaryRanking, c
     )
     pdf.build(buildFullPage(width - 30, week, primaryTableData, collegeTableData, primaryRanking, collegeRanking))
 
-def generatePdf(currentWeek, buffer):
+def generatePdfForCurrentWeek(currentWeek, buffer):
     cm2Level = models.SchoolClassLevel.CM2
     sixiemeLevel = models.SchoolClassLevel.SIXIEME
 
@@ -78,3 +82,17 @@ def generatePdf(currentWeek, buffer):
     sixiemeRankingData = scoreUtils.formatClassDtosForPdfPodium(sortedSixiemeClassesDtos)
 
     buildPdf(buffer, currentWeek, cm2TableData, sixiemeTableData, cm2RankingData, sixiemeRankingData)
+
+def generatePdfForAllTime(buffer):
+    cm2Level = models.SchoolClassLevel.CM2
+    sixiemeLevel = models.SchoolClassLevel.SIXIEME
+    
+    sortedCm2ClassesDtos = schoolClassUtils.getSortedClassesAllTimeForLevel(cm2Level)
+    sortedSixiemeClassesDtos = schoolClassUtils.getSortedClassesAllTimeForLevel(sixiemeLevel)
+    
+    cm2TableData = scoreUtils.formatClassDtosForPdfTable(sortedCm2ClassesDtos)
+    cm2RankingData = scoreUtils.formatClassDtosForPdfPodium(sortedCm2ClassesDtos)
+    sixiemeTableData = scoreUtils.formatClassDtosForPdfTable(sortedSixiemeClassesDtos)
+    sixiemeRankingData = scoreUtils.formatClassDtosForPdfPodium(sortedSixiemeClassesDtos)
+
+    buildPdf(buffer, None, cm2TableData, sixiemeTableData, cm2RankingData, sixiemeRankingData)

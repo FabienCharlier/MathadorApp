@@ -126,7 +126,7 @@ def downloadPdf(request):
     lastWeek = weekUtils.getLastWeek()
 
     buffer = io.BytesIO()
-    pdfGeneration.generatePdf(lastWeek, buffer)
+    pdfGeneration.generatePdfForCurrentWeek(lastWeek, buffer)
     buffer.seek(0)
 
     return http.FileResponse(buffer, as_attachment=True, filename=f"resultats-semaine-{lastWeek.displayNumber}-mathador.pdf")
@@ -263,3 +263,22 @@ def sendEmailsResults(request):
             email.send()
             
     return redirectWithParams('emails', {'success': 'Les résultats ont bien été envoyés'})
+
+@adminUserRequired
+def allTimeScores(request):
+
+    cm2Level = models.SchoolClassLevel.CM2
+    sixiemeLevel = models.SchoolClassLevel.SIXIEME
+    
+    sortedCm2ClassesDtos = schoolClassUtils.getSortedClassesAllTimeForLevel(cm2Level)
+    sortedSixiemeClassesDtos = schoolClassUtils.getSortedClassesAllTimeForLevel(sixiemeLevel)
+
+    return shortcuts.render(request, "calculusModule/allTimeScores.html",  {'sortedCm2ClassesDtos': sortedCm2ClassesDtos, 'sortedSixiemeClassesDtos': sortedSixiemeClassesDtos})
+
+@adminUserRequired
+def downloadPdf(request):
+    buffer = io.BytesIO()
+    pdfGeneration.generatePdfForAllTime(buffer)
+    buffer.seek(0)
+
+    return http.FileResponse(buffer, as_attachment=True, filename=f"resultats-generaux-mathador.pdf")

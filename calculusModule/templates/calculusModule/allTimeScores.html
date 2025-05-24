@@ -1,0 +1,15 @@
+{% extends "calculusModule/base_generic.html" %}
+
+{% block stylesheet %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/weeklyScores.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <h2>Scores globaux</h2>
+  <a class="colorfulButton bodyLinkNotAsLink" href="{% url 'downloadPdf' %}">Télécharger le pdf des résultats</a>
+  <h3>CM2</h3>
+  {% include "calculusModule/components/weeklyScoresTable.html" with sortedClassesDtos=sortedCm2ClassesDtos %}
+  <h3>Sixièmes</h3>
+  {% include "calculusModule/components/weeklyScoresTable.html" with sortedClassesDtos=sortedSixiemeClassesDtos %}
+{% endblock %}

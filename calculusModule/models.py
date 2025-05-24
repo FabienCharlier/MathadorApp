@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User as DjangoUser
+from django.db.models import Prefetch
 
 class Week(models.Model):
     dateStart = models.DateField(null=False, blank=False, verbose_name="Date de début")
