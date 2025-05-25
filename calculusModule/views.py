@@ -255,7 +255,7 @@ def sendEmailsResults(request):
             email.attach_alternative(htmlMessage, "text/html")
 
             buffer=BytesIO()
-            pdfGeneration.generatePdf(currentWeek, buffer)
+            pdfGeneration.generatePdfForCurrentWeek(currentWeek, buffer)
             pdf=buffer.getvalue()
             buffer.close()
             email.attach('resultats.pdf',pdf,'application/pdf')
