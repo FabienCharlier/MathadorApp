@@ -17,7 +17,13 @@ def formatClassDtosForPdfTable(scoreDtos):
         if scoreDto.score is None:
             formattedScores.append([scoreDto.ranking, scoreDto.schoolClass.name, '-', '-', '-'])
         else:
-            formattedScores.append([scoreDto.ranking, scoreDto.schoolClass.name, round(scoreDto.score.numericScore, 2), round(scoreDto.score.nullScoresPercentage, 2), round(scoreDto.score.mathadorsPercentage, 2)])
+            formattedScores.append([
+                scoreDto.ranking,
+                scoreDto.schoolClass.name,
+                round(scoreDto.score.numericScore, 2) if scoreDto.score.numericScore is not None else '-',
+                round(scoreDto.score.nullScoresPercentage, 2) if scoreDto.score.nullScoresPercentage is not None else '-',
+                round(scoreDto.score.mathadorsPercentage, 2) if scoreDto.score.mathadorsPercentage is not None else '-'
+            ])
     return formattedScores
 
 def formatClassDtosForPdfPodium(scoreDtos):
