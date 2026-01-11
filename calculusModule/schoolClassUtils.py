@@ -53,8 +53,11 @@ def getSortedClassesAllTimeForLevel(level):
     actualRank = 1
 
     for class_with_scores in all_classes_with_scores:
-        scoreDto = dtos.ScoreDto(class_with_scores.average_numeric_score, class_with_scores.average_null_percentage_score, class_with_scores.average_mathador_percentage_score)
-        schoolClassDtoWithRankingAndScore = dtos.SchoolClassWithRankingAndScore(class_with_scores, scoreDto, actualRank)
+        scoreDto = None
+        if class_with_scores.average_numeric_score is not None or class_with_scores.average_null_percentage_score is not None or class_with_scores.average_mathador_percentage_score is not None:
+            scoreDto = dtos.ScoreDto(class_with_scores.average_numeric_score, class_with_scores.average_null_percentage_score, class_with_scores.average_mathador_percentage_score)
+
+        schoolClassDtoWithRankingAndScore = dtos.SchoolClassWithRankingAndScore(class_with_scores, scoreDto, visibleRank)
         rankedClassDtos.append(schoolClassDtoWithRankingAndScore)
 
         actualRank += 1
