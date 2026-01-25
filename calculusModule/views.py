@@ -235,6 +235,8 @@ def sendEmailsResults(request):
     teachersEmail = set()
     for schoolClass in schoolClasses :
         teachersEmail.add(schoolClass.teacher.email)
+    # Warning : this is a manual adjustment that needs to be removed one day !!!
+    teachersEmail.add('alieth.feuvrier@ac-nancy-metz.fr')
 
     if request.method == "POST":
         resultsMailForm = forms.ResultsMailForm(request.POST)
