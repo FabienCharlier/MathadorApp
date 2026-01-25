@@ -7,7 +7,7 @@
 
 {% block content %}
   <h2>Scores de la semaine n°{{ lastWeek.displayNumber }}, {{ lastWeek.displayDates }}</h2>
-  <a class="colorfulButton bodyLinkNotAsLink" href="{% url 'downloadPdf' %}">Télécharger le pdf des résultats</a>
+  <a class="colorfulButton bodyLinkNotAsLink" href="{% url 'downloadWeeklyScorePdf' %}">Télécharger le pdf des résultats</a>
   <h3>CM2</h3>
   {% include "calculusModule/components/weeklyScoresTable.html" with sortedClassesDtos=sortedCm2ClassesDtos %}
   <h3>Sixièmes</h3>
