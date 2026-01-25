@@ -122,7 +122,7 @@ def weeklyScores(request):
     return shortcuts.render(request, "calculusModule/weeklyScores.html", {'sortedCm2ClassesDtos': sortedCm2ClassesDtos, 'sortedSixiemeClassesDtos': sortedSixiemeClassesDtos, 'lastWeek': lastWeek})
 
 @adminUserRequired
-def downloadPdf(request):
+def downloadWeeklyScorePdf(request):
     lastWeek = weekUtils.getLastWeek()
 
     buffer = io.BytesIO()
@@ -276,7 +276,7 @@ def allTimeScores(request):
     return shortcuts.render(request, "calculusModule/allTimeScores.html",  {'sortedCm2ClassesDtos': sortedCm2ClassesDtos, 'sortedSixiemeClassesDtos': sortedSixiemeClassesDtos})
 
 @adminUserRequired
-def downloadPdf(request):
+def downloadAllTimePdf(request):
     buffer = io.BytesIO()
     pdfGeneration.generatePdfForAllTime(buffer)
     buffer.seek(0)
