@@ -30,6 +30,7 @@ SECRET_KEY = 'django-insecure-83(b&e8dc4jrhunn__xawoc2^6gn7^y6gr-9n+ks6hxm-m))sd
 DEBUG = os.getenv("DEBUG") == "True"
 
 ALLOWED_HOSTS = ['.vercel.app', '.now.sh', 'localhost', '127.0.0.1', '.monnainter.net']
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 # Application definition
