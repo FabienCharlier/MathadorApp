@@ -1,6 +1,7 @@
 services:
   mathador-app:
     build: .
+    restart: always
     depends_on:
       postgres-database:
         condition: service_healthy
@@ -38,6 +39,7 @@ services:
 
   nginx:
     image: nginx:1.13-alpine
+    restart: always
     ports:
       - 8765:8765
     volumes:
