@@ -29,7 +29,7 @@ services:
     volumes: 
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "mathador-user", "-d", "mathador-app"]
+      test: ["CMD", "pg_isready", "-U", "${DATABASE_USER}", "-d", "${DATABASE_NAME}"]
       interval: 5m
       timeout: 5s
       retries: 3
