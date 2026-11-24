@@ -16,5 +16,6 @@ urlpatterns = [
     path('emails', views.emails, name="emails"),
     path('sendEmails/reminder', views.sendEmailsReminder, name="sendEmailsReminder"),
     path('sendEmails/newWeek', views.sendEmailsNewWeek, name="sendEmailsNewWeek"),
-    path('sendEmails/results', views.sendEmailsResults, name="sendEmailsResults")
+    path('sendEmails/results', views.sendEmailsResults, name="sendEmailsResults"),
+    path('health-check', views.healthCheck, name="healthCheck")
 ]

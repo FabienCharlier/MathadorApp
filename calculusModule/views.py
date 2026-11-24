@@ -284,3 +284,6 @@ def downloadAllTimePdf(request):
     buffer.seek(0)
 
     return http.FileResponse(buffer, as_attachment=True, filename=f"resultats-generaux-mathador.pdf")
+
+def healthCheck(request):
+    return http.HttpResponse("Server healthy")
